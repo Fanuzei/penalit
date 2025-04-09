@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penalit - Премиум чит-клиент для Minecraft</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --primary-dark: #5649c0;
+            --secondary: #00cec9;
+            --dark: #2d3436;
+            --light: #f5f6fa;
+            --danger: #d63031;
+            --success: #00b894;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #0f0f13;
+            color: var(--light);
+            overflow-x: hidden;
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            background: rgba(15, 15, 19, 0.8);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--light);
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: var(--primary);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s;
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: 0.3s;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .cta-button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .cta-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(108, 92, 231, 0.3);
+        }
+        
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 0 5%;
+            padding-top: 80px;
+        }
+        
+        .hero-content {
+            max-width: 600px;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        
+        .hero h1 span {
+            color: var(--primary);
+        }
+        
+        .hero p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .secondary-button {
+            background: transparent;
+            color: var(--light);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .secondary-button:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-3px);
+        }
+        
+        .hero-image {
+            position: absolute;
+            right: 5%;
+            width: 40%;
+            max-width: 700px;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .features {
+            padding: 5rem 5%;
+            background: rgba(15, 15, 19, 0.5);
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .section-title p {
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background: rgba(30, 30, 36, 0.5);
+            border-radius: 10px;
+            padding: 2rem;
+            transition: 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(40, 40, 46, 0.5);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card p {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+        }
+        
+        .pricing {
+            padding: 5rem 5%;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .pricing-card {
+            background: rgba(30, 30, 36, 0.5);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            transition: 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pricing-card.popular::before {
+            content: 'ЕДИНСТВЕННЫЙ ВАРИАНТ';
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--primary);
+            color: white;
+            padding: 0.3rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            background: rgba(40, 40, 46, 0.5);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .pricing-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .price {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .price span {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .pricing-features {
+            margin-bottom: 2rem;
+        }
+        
+        .pricing-features li {
+            list-style: none;
+            padding: 0.7rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .pricing-features li:last-child {
+            border-bottom: none;
+        }
+        
+        .faq {
+            padding: 5rem 5%;
+            background: rgba(15, 15, 19, 0.5);
+        }
+        
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .faq-item {
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .faq-question {
+            padding: 1.5rem;
+            background: rgba(30, 30, 36, 0.5);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        
+        .faq-question:hover {
+            background: rgba(40, 40, 46, 0.5);
+        }
+        
+        .faq-answer {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background: rgba(20, 20, 26, 0.5);
+        }
+        
+        .faq-item.active .faq-answer {
+            padding: 1.5rem;
+            max-height: 500px;
+        }
+        
+        .faq-toggle {
+            transition: transform 0.3s;
+        }
+        
+        .faq-item.active .faq-toggle {
+            transform: rotate(45deg);
+        }
+        
+        footer {
+            background: #0a0a0d;
+            padding: 3rem 5%;
+            text-align: center;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-logo {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+        }
+        
+        .footer-logo span {
+            color: var(--primary);
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .social-links a {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.5rem;
+            transition: 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.9rem;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: rgba(30, 30, 36, 0.95);
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            border: none;
+            background: none;
+            transition: 0.3s;
+        }
+
+        .close-button:hover {
+            color: var(--primary);
+        }
+
+        .contact-list {
+            margin-top: 1rem;
+        }
+
+        .contact-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .contact-item:last-child {
+            border-bottom: none;
+        }
+
+        .contact-item i {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        
+        @media (max-width: 992px) {
+            .hero-image {
+                display: none;
+            }
+            
+            .hero-content {
+                max-width: 100%;
+                text-align: center;
+            }
+            
+            .hero-buttons {
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas class="particles" id="particles-js"></canvas>
+    
+    <nav class="navbar">
+        <a href="#" class="logo"><span>Penalit</span></a>
+        <div class="nav-links">
+            <a href="#features">Функции</a>
+            <a href="#pricing">Доступ</a>
+            <a href="#faq">Часто задаваемые вопросы</a>
+            <a href="#download">Скачать</a>
+        </div>
+        <button class="cta-button">Начать</button>
+    </nav>
+    
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Пените в Minecraft с <span>Penalit</span></h1>
+            <p>Самый продвинутый и незаметный чит-клиент для Minecraft с премиум-функциями, регулярными обновлениями и непревзойдённой производительностью.</p>
+            <div class="hero-buttons">
+                <button class="cta-button">Скачать сейчас</button>
+                <button class="secondary-button">Посмотреть функции</button>
+            </div>
+        </div>
+        <img src="https://i.imgur.com/JQh6WxG.png" alt="Предпросмотр клиента Penalit" class="hero-image">
+    </section>
+    
+    <section class="features" id="features">
+        <div class="section-title">
+            <h2>Премиум-функции</h2>
+            <p>Penalit оснащён мощными функциями, которые дадут вам абсолютное преимущество в Minecraft</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <h3>ESP и радар</h3>
+                <p>Видьте игроков, мобов и предметы сквозь стены с нашей продвинутой системой ESP. Никогда больше не теряйте врагов из виду.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-crosshairs"></i>
+                </div>
+                <h3>Идеальная точность</h3>
+                <p>Наш продвинутый помощник прицеливания помогает вам попадать точно в цель. Настраиваемые параметры для идеальной персонализации.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-running"></i>
+                </div>
+                <h3>Хаки движения</h3>
+                <p>Летайте, ускоряйтесь, делайте прыжки и многое другое. Наши хаки движения дают вам полный контроль над перемещением.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Обход античита</h3>
+                <p>Penalit разработан для обхода большинства систем античита, сохраняя ваш геймплей незаметным.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-palette"></i>
+                </div>
+                <h3>Настраиваемый интерфейс</h3>
+                <p>Полностью настраиваемый интерфейс с темами и макетами, подходящими вашему стилю.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+                <h3>Регулярные обновления</h3>
+                <p>Мы постоянно обновляем Penalit, добавляя новые функции и обеспечивая совместимость с последними версиями Minecraft.</p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="pricing" id="pricing">
+        <div class="section-title">
+            <h2>Бесплатный доступ</h2>
+            <p>Penalit теперь полностью бесплатен! Получите доступ ко всем функциям без каких-либо затрат.</p>
+        </div>
+        <div class="pricing-grid">
+            <div class="pricing-card popular">
+                <h3>Бесплатно</h3>
+                <div class="price">0 ₽ <span>навсегда</span></div>
+                <ul class="pricing-features">
+                    <li>Полный доступ ко всем функциям</li>
+                    <li>Регулярные обновления</li>
+                    <li>Поддержка сообщества</li>
+                    <li>Без ограничений</li>
+                </ul>
+                <button class="cta-button">Скачать сейчас</button>
+            </div>
+        </div>
+    </section>
+    
+    <section class="faq" id="faq">
+        <div class="section-title">
+            <h2>Часто задаваемые вопросы</h2>
+            <p>Найдите ответы на распространённые вопросы о Penalit</p>
+        </div>
+        <div class="faq-container">
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Может ли Penalit быть обнаружен античитами?</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Penalit разработан с использованием продвинутых методов обхода, чтобы избежать обнаружения большинством античит-систем. Однако ни один чит не является полностью необнаружимым, особенно на серверах с жёстким контролем. Мы рекомендуем использовать настройки "Легитного режима" на таких серверах.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Какие версии Minecraft поддерживает Penalit?</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Penalit поддерживает версии Minecraft Java Edition с 1.8 по 1.19. Мы выпускаем обновления в течение 48 часов после выхода новых версий Minecraft для обеспечения совместимости.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Могут ли меня забанить за использование Penalit?</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Хотя мы делаем всё возможное, чтобы Penalit оставался незаметным, использование любого чит-клиента несёт риск бана, особенно на серверах с активной модерацией. Мы предоставляем настраиваемые параметры, чтобы снизить риск и сделать ваш геймплей более естественным.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Как часто обновляется Penalit?</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Мы выпускаем небольшие обновления еженедельно с исправлениями ошибок и улучшениями. Крупные обновления с новыми функциями выходят ежемесячно. Критические обновления для новых версий Minecraft выходят в течение 48 часов после обновления игры.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Есть ли бесплатная пробная версия?</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Теперь Penalit полностью бесплатен! Вам больше не нужна пробная версия — просто скачайте и начните использовать все функции без ограничений.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="download" id="download" style="padding: 5rem 5%; text-align: center;">
+        <div class="section-title">
+            <h2>Готовы к доминированию?</h2>
+            <p>Скачайте Penalit сегодня и испытайте непревзойдённое преимущество в Minecraft</p>
+            <button class="cta-button" style="margin-top: 2rem; font-size: 1.2rem; padding: 1rem 2rem;">Скачать сейчас</button>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="footer-content">
+            <a href="#" class="footer-logo"><span>Penalit</span></a>
+            <div class="footer-links">
+                <a href="#features">Функции</a>
+                <a href="#pricing">Доступ</a>
+                <a href="#faq">Вопросы</a>
+                <a href="#" id="contact-link">Контакты</a>
+            </div>
+            <div class="social-links">
+            </div>
+            <p class="copyright">© 2025 Penalit. Не связан с Mojang или Microsoft.</p>
+        </div>
+    </footer>
+
+    <div class="modal" id="contact-modal">
+        <div class="modal-content">
+            <button class="close-button" id="close-modal">×</button>
+            <h2 style="text-align: center; margin-bottom: 1rem;">Контакты</h2>
+            <div class="contact-list">
+                <div class="contact-item">
+                    <i class="fab fa-discord"></i>
+                    <span>m1lehvh</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fab fa-discord"></i>
+                    <span>everyone.135</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const canvas = document.getElementById('particles-js');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        let particles = [];
+        const particleCount = window.innerWidth < 768 ? 30 : 100;
+        
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = Math.random() * 1 - 0.5;
+                this.speedY = Math.random() * 1 - 0.5;
+                this.color = `rgba(108, 92, 231, ${Math.random() * 0.5 + 0.1})`;
+            }
+            
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            }
+            
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        
+        function init() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+        
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+            }
+            
+            requestAnimationFrame(animate);
+        }
+        
+        init();
+        animate();
+        
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            init();
+        });
+        
+        const faqItems = document.querySelectorAll('.faq-item');
+        
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            
+            question.addEventListener('click', () => {
+                item.classList.toggle('active');
+            });
+        });
+        
+        const contactLink = document.getElementById('contact-link');
+        const modal = document.getElementById('contact-modal');
+        const closeModal = document.getElementById('close-modal');
+
+        contactLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            modal.style.display = 'flex';
+        });
+
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                if (this.id !== 'contact-link') {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
